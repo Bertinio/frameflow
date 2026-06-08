@@ -4,6 +4,7 @@ export default function Home() {
 
       {/* HERO */}
       <header className="pt-40 pb-32 max-w-5xl mx-auto px-6 text-center">
+        <img src="/frameflow-logo.svg" alt="FrameFlow logo" className="mx-auto mb-8 w-56" />
         <h1 className="text-6xl font-extrabold leading-tight mb-6 bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent drop-shadow-xl">
           Configureer ramen.  
           <br />
