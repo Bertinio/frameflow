@@ -2,8 +2,11 @@ import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcrypt";
 import { prisma } from "@/lib/prisma";
+import { JWT } from "next-auth/jwt";
+import { Session, NextAuthOptions } from "next-auth";
+import { User } from "@prisma/client";
 
-export const authOptions = {
+export const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
       name: "credentials",
@@ -11,7 +14,7 @@ export const authOptions = {
         email: { label: "Email", type: "email" },
         password: { label: "Password", type: "password" },
       },
-      async authorize(credentials) {
+      async authorize(credentials?: Record<string, string> | undefined) {
         if (!credentials?.email || !credentials?.password) {
           return null;
         }
@@ -49,7 +52,13 @@ export const authOptions = {
   },
 
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({
+      token,
+      user,
+    }: {
+      token: JWT & { id?: string; email?: string; role?: string };
+      user?: User | null;
+    }) {
       if (user) {
         token.id = user.id;
         token.email = user.email;
@@ -58,13 +67,24 @@ export const authOptions = {
       return token;
     },
 
-    async session({ session, token }) {
-      session.user = {
-        id: token.id,
-        email: token.email,
-        role: token.role,
+    async session({
+      session,
+      token,
+    }: {
+      session: Session;
+      token: JWT & { id?: string; email?: string; role?: string };
+    }) {
+      const typedSession = session as Session & {
+        user: { id: string; email?: string | null; role?: string };
       };
-      return session;
+
+      typedSession.user = {
+        id: token.id ?? "",
+        email: token.email ?? null,
+        role: token.role ?? "",
+      };
+
+      return typedSession;
     },
   },
 
