@@ -1,7 +1,7 @@
 import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { authOptions } from "@/lib/auth";
 import { NextResponse } from "next/server";
 
 async function parseRequestBody(request: Request) {
@@ -23,16 +23,16 @@ async function parseRequestBody(request: Request) {
   return body;
 }
 
-function parseJsonValue(value: string): unknown {
-  if (!value) {
-    return {};
+function normalizeOptions(value: unknown): string {
+  if (value === undefined || value === null || value === "") {
+    return "[]";
   }
 
-  try {
-    return JSON.parse(value);
-  } catch {
+  if (typeof value === "string") {
     return value;
   }
+
+  return JSON.stringify(value);
 }
 
 export async function POST(request: Request) {
@@ -53,7 +53,7 @@ export async function POST(request: Request) {
   const height = Number(body.height ?? "");
   const color = String(body.color ?? "").trim();
   const glass = String(body.glass ?? "").trim();
-  const options = parseJsonValue(String(body.options ?? ""));
+  const options = normalizeOptions(body.options);
   const unitPrice = String(body.unitPrice ?? "0").trim();
   const totalPrice = String(body.totalPrice ?? "0").trim();
 

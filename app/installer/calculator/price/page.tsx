@@ -1,5 +1,5 @@
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { authOptions } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 
@@ -7,7 +7,7 @@ type Props = {
   searchParams: Record<string, string | string[] | undefined>;
 };
 
-function buildQuery(params: Record<string, any>) {
+function buildQuery(params: Record<string, unknown>) {
   const qs = new URLSearchParams();
   Object.entries(params).forEach(([k, v]) => {
     if (v === undefined || v === null) return;

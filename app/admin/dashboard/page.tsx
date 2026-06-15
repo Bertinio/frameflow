@@ -1,7 +1,16 @@
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { redirect } from "next/navigation";
 import Link from "next/link";
 
 export default async function DashboardPage() {
+  const session = await getServerSession(authOptions);
+
+  if (!session?.user || session.user.role !== "admin") {
+    redirect("/login");
+  }
+
   const totalUsers = await prisma.user.count();
   const totalAdmins = await prisma.user.count({ where: { role: "admin" } });
   const totalInstallers = await prisma.user.count({ where: { role: "installer" } });
