@@ -1,5 +1,5 @@
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { authOptions } from "@/lib/auth";
 import { redirect } from "next/navigation";
 
 type Props = {
@@ -36,7 +36,7 @@ export default async function OptionsPage({ searchParams }: Props) {
         <header className="rounded-3xl border border-white/10 bg-white/5 p-8 shadow-lg shadow-black/20">
           <p className="text-sm uppercase tracking-[0.3em] text-sky-300">Calculator</p>
           <h1 className="mt-4 text-4xl font-semibold text-white">Extra opties</h1>
-          <p className="mt-4 text-slate-400">Selecteer eventuele extra's voor dit raam.</p>
+          <p className="mt-4 text-slate-400">Selecteer eventuele extra&apos;s voor dit raam.</p>
         </header>
 
         <section className="rounded-3xl border border-white/10 bg-white/5 p-8 shadow-sm shadow-black/10">

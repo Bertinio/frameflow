@@ -1,5 +1,5 @@
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import Link from "next/link";
@@ -63,7 +63,7 @@ export default async function QuoteDetailsPage({ params }: Props) {
         </div>
 
         <div className="grid gap-6 lg:grid-cols-3">
-          <InfoCard label="Klantnaam" value={quote.customerName ?? "-"} />
+          <InfoCard label="Status" value={quote.status} />
           <InfoCard label="Datum" value={new Intl.DateTimeFormat("nl-NL", {
             day: "2-digit",
             month: "long",
@@ -100,9 +100,9 @@ export default async function QuoteDetailsPage({ params }: Props) {
                       <td className="px-6 py-5 text-sm text-white">
                         {item.width}x{item.height} mm
                       </td>
-                      <td className="px-6 py-5 text-sm text-slate-300">{item.quantity}</td>
+                      <td className="px-6 py-5 text-sm text-slate-300">1</td>
                       <td className="px-6 py-5 text-sm text-slate-300">
-                        {item.color || "-"} / {item.profileType || "-"}
+                        {item.color || "-"} / {item.glass || "-"}
                       </td>
                       <td className="px-6 py-5 text-sm text-slate-300">€{item.totalPrice?.toString()}</td>
                     </tr>

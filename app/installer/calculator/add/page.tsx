@@ -30,13 +30,12 @@ export default function CalculatorAddPage({ searchParams }: Props) {
             Er ontbreken één of meerdere configuratieparameters. Ga terug naar de calculator om het raam opnieuw te configureren.
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-            <button
-              type="button"
-              onClick={() => redirect("/installer/calculator/type")}
+            <Link
+              href="/installer/calculator/type"
               className="rounded-2xl bg-sky-500 px-5 py-3 font-semibold text-black transition hover:bg-sky-400"
             >
               Nog een raam configureren
-            </button>
+            </Link>
           </div>
         </div>
       </div>
@@ -75,7 +74,7 @@ export default function CalculatorAddPage({ searchParams }: Props) {
               <DetailRow label="Hoogte" value={`${height} mm`} />
               <DetailRow label="Kleur" value={color || "Standaard"} />
               <DetailRow label="Glas" value={glass || "Standaard"} />
-              <DetailRow label="Opties" value={options || "Geen extra opties"} />
+              <DetailRow label="Opties" value={options.length ? options.join(", ") : "Geen extra opties"} />
             </div>
           </div>
 
