@@ -5,6 +5,7 @@ export async function GET(
   req: NextRequest,
   { params }: { params: { id: string } }
 ) {
+  void req;
   const { id } = params;
   const pdfBuffer = await generatePdfForQuote(id);
 

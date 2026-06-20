@@ -1,35 +1,16 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { prisma } from "@/lib/prisma";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
-async function parseRequestBody(request: Request) {
-  const contentType = request.headers.get("content-type") ?? "";
-
-  if (contentType.includes("application/json")) {
-    return request.json();
-  }
-
-  const formData = await request.formData();
-  const body: Record<string, string> = {};
-
-  formData.forEach((value, key) => {
-    if (typeof value === "string") {
-      body[key] = value;
-    }
-  });
-
-  return body;
-}
-
-export async function POST(request: Request) {
+export async function POST(req: NextRequest) {
   const session = await getServerSession(authOptions);
 
   if (!session?.user || session.user.role !== "installer") {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const body = await parseRequestBody(request);
+  const body = (await req.json()) as { quoteId?: string };
   const quoteId = String(body.quoteId ?? "").trim();
   const installerId = session.user.id as string;
 

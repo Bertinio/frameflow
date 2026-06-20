@@ -2,6 +2,7 @@ import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcrypt";
 import { prisma } from "@/lib/prisma";
+import { NextRequest, NextResponse } from "next/server";
 import { JWT } from "next-auth/jwt";
 import {
   Session,
@@ -160,4 +161,19 @@ export const authOptions: NextAuthOptions = {
 };
 
 export const handler = NextAuth(authOptions);
-export { handler as GET, handler as POST };
+
+export async function GET(
+  req: NextRequest,
+  { params }: { params: { nextauth: string[] } }
+) {
+  const response = await handler(req, { params });
+  return response ?? NextResponse.json({ error: "Auth handler failed" }, { status: 500 });
+}
+
+export async function POST(
+  req: NextRequest,
+  { params }: { params: { nextauth: string[] } }
+) {
+  const response = await handler(req, { params });
+  return response ?? NextResponse.json({ error: "Auth handler failed" }, { status: 500 });
+}

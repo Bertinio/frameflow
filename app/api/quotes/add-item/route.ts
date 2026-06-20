@@ -2,26 +2,7 @@ import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import { NextResponse } from "next/server";
-
-async function parseRequestBody(request: Request) {
-  const contentType = request.headers.get("content-type") ?? "";
-
-  if (contentType.includes("application/json")) {
-    return request.json();
-  }
-
-  const formData = await request.formData();
-  const body: Record<string, string> = {};
-
-  formData.forEach((value, key) => {
-    if (typeof value === "string") {
-      body[key] = value;
-    }
-  });
-
-  return body;
-}
+import { NextRequest, NextResponse } from "next/server";
 
 function parseJsonValue(value: string): unknown {
   if (!value) {
@@ -35,7 +16,7 @@ function parseJsonValue(value: string): unknown {
   }
 }
 
-export async function POST(request: Request) {
+export async function POST(req: NextRequest) {
   const session = await getServerSession(authOptions);
 
   if (!session?.user || session.user.role !== "installer") {
@@ -45,7 +26,7 @@ export async function POST(request: Request) {
     );
   }
 
-  const body = await parseRequestBody(request);
+  const body = (await req.json()) as Record<string, unknown>;
   const installerId = session.user.id as string;
   const quoteId = String(body.quoteId ?? "").trim();
   const type = String(body.type ?? "").trim();
