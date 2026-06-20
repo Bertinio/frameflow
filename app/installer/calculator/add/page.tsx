@@ -16,6 +16,7 @@ export default function CalculatorAddPage({ searchParams }: Props) {
       ? searchParams.options
       : [String(searchParams.options)]
     : [];
+  const optionsLabel = options.length > 0 ? options.join(", ") : "Geen extra opties";
   const unitPrice = String(searchParams.unitPrice ?? "0");
   const totalPrice = String(searchParams.totalPrice ?? "0");
   const quoteId = String(searchParams.quoteId ?? "");
@@ -61,7 +62,7 @@ export default function CalculatorAddPage({ searchParams }: Props) {
               <DetailRow label="Hoogte" value={`${height} mm`} />
               <DetailRow label="Kleur" value={color || "Standaard"} />
               <DetailRow label="Glas" value={glass || "Standaard"} />
-              <DetailRow label="Opties" value={options || "Geen extra opties"} />
+              <DetailRow label="Opties" value={optionsLabel} />
             </div>
           </div>
 
