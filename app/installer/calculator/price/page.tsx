@@ -2,6 +2,10 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { redirect } from "next/navigation";
 import Link from "next/link";
+import { calculateWindowPriceAction } from "@/app/installer/calculator/actions";
+import PriceSummary from "@/app/installer/calculator/components/PriceSummary";
+import { prisma } from "@/lib/prisma";
+import { calculatePriceWithMargin, roundPrice } from "@/lib/pricing";
 
 type Props = {
   searchParams: Record<string, string | string[] | undefined>;
@@ -26,6 +30,11 @@ export default async function PricePage({ searchParams }: Props) {
     redirect("/login");
   }
 
+  const user = await prisma.user.findUnique({
+    where: { id: session.user.id },
+    select: { margin: true },
+  });
+
   const type = String(searchParams.type ?? "");
   const width = Number(searchParams.width ?? 0);
   const height = Number(searchParams.height ?? 0);
@@ -38,7 +47,11 @@ export default async function PricePage({ searchParams }: Props) {
       : [String(searchParams.options)]
     : [];
 
-  const areaM2 = (width * height) / 1_000_000;
+  const pricing = await calculateWindowPriceAction({
+    width,
+    height,
+    color,
+  });
 
   const baseMap: Record<string, number> = {
     draairaam: 80,
@@ -49,8 +62,10 @@ export default async function PricePage({ searchParams }: Props) {
 
   const base = baseMap[type] ?? 60;
   const optionsCost = optionsArr.length * 12;
-  const unitPrice = base + areaM2 * 40 + optionsCost;
-  const totalPrice = unitPrice; // single unit
+  const marginRate = Number(user?.margin ?? 0.15);
+  const unitPrice = roundPrice(base + pricing.totalPrice + optionsCost);
+  const { margin, total } = calculatePriceWithMargin(unitPrice, marginRate);
+  const totalPrice = total;
 
   const query = buildQuery({ type, width, height, color, glass, options: optionsArr });
 
@@ -91,11 +106,21 @@ export default async function PricePage({ searchParams }: Props) {
 
             <div className="flex items-center justify-between rounded-xl border border-white/10 bg-transparent px-4 py-4">
               <div>
-                <div className="text-sm text-slate-400">Eenheidsprijs</div>
-                <div className="font-semibold text-white">€{unitPrice.toFixed(2)}</div>
+                <div className="text-sm text-slate-400">Oppervlakte</div>
+                <div className="font-semibold text-white">{pricing.areaM2.toFixed(2)} m²</div>
               </div>
-              <div className="text-white">Aantal: 1</div>
+              <div className="text-white">Basis €{pricing.basePrice.toFixed(2)}</div>
             </div>
+
+            <div className="flex items-center justify-between rounded-xl border border-white/10 bg-transparent px-4 py-4">
+              <div>
+                <div className="text-sm text-slate-400">Kleurtoeslag</div>
+                <div className="font-semibold text-white">{color || "Standaard"}</div>
+              </div>
+              <div className="text-white">€{pricing.colorSurcharge.toFixed(2)}</div>
+            </div>
+
+            <PriceSummary price={unitPrice} margin={margin} total={totalPrice} />
 
             <div className="mt-4 flex gap-3">
               <Link

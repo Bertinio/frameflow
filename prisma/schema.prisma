@@ -7,22 +7,203 @@ datasource db {
   url      = "file:./dev.db"
 }
 
+model Installer {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  name         String
+  role         String   @default("installer")
+  createdAt    DateTime @default(now())
+}
+
 model User {
   id             String  @id @default(cuid())
   email          String  @unique
   passwordHash   String
   role           String
+  name           String?
+  margin         Decimal @default(0.15)
   createdAt      DateTime @default(now())
 
   installerOrders Order[]
   quotes          Quote[]
+  configDrafts    ConfigDraft[]
+  installerPrices InstallerPrice[]
+  rolluikDrafts   RolluikDraft[]
+  installerRolluikPrices InstallerRolluikPrice[]
+  installerSettings InstallerSettings?
+  manufacturer   Manufacturer?
+}
+
+model Manufacturer {
+  id        String                @id @default(cuid())
+  userId    String                @unique
+  user      User                  @relation(fields: [userId], references: [id])
+  name      String
+  createdAt DateTime              @default(now())
+  updatedAt DateTime              @updatedAt
+  products  ManufacturerProduct[]
+}
+
+model ManufacturerProduct {
+  id              String       @id @default(cuid())
+  manufacturerId  String
+  manufacturer    Manufacturer @relation(fields: [manufacturerId], references: [id])
+  type            String
+  name            String
+  pricePerM2      Decimal?
+  fixedPrice      Decimal?
+  surchargeType   String?
+  surchargeValue  Decimal?
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+}
+
+model ConfigDraft {
+  id          String   @id @default(cuid())
+  installerId String
+  installer   User     @relation(fields: [installerId], references: [id])
+  profileId   String?
+  profile     Profile? @relation(fields: [profileId], references: [id])
+  colorOptionId String?
+  colorOption ColorOption? @relation(fields: [colorOptionId], references: [id])
+  glassOptionId String?
+  glassOption GlassOption? @relation(fields: [glassOptionId], references: [id])
+  type        String
+  width       Int
+  height      Int
+  color       String
+  glass       String?
+  extras      String?
+  createdAt   DateTime @default(now())
+}
+
+model Profile {
+  id         String       @id @default(cuid())
+  name       String
+  pricePerM2 Decimal
+  drafts     ConfigDraft[]
+  installerPrices InstallerPrice[]
+}
+
+model ColorOption {
+  id             String       @id @default(cuid())
+  name           String
+  surchargeType  String
+  surchargeValue Decimal
+  drafts         ConfigDraft[]
+  installerPrices InstallerPrice[]
+}
+
+model GlassOption {
+  id         String       @id @default(cuid())
+  name       String
+  pricePerM2 Decimal
+  drafts     ConfigDraft[]
+  installerPrices InstallerPrice[]
+}
+
+model RolluikLamelType {
+  id         String   @id @default(cuid())
+  name       String
+  pricePerM2 Decimal
+  drafts     RolluikDraft[]
+  installerRolluikPrices InstallerRolluikPrice[]
+}
+
+model RolluikColorCategory {
+  id             String   @id @default(cuid())
+  name           String
+  surchargeType  String
+  surchargeValue Decimal
+  drafts         RolluikDraft[]
+  installerRolluikPrices InstallerRolluikPrice[]
+}
+
+model RolluikMotor {
+  id         String   @id @default(cuid())
+  type       String   @unique
+  price      Decimal
+  drafts     RolluikDraft[]
+}
+
+model RolluikDraft {
+  id           String               @id @default(cuid())
+  installerId  String
+  installer    User                 @relation(fields: [installerId], references: [id])
+  width        Int
+  height       Int
+  lamelTypeId  String
+  lamelType    RolluikLamelType     @relation(fields: [lamelTypeId], references: [id])
+  colorId      String
+  colorCategory RolluikColorCategory @relation(fields: [colorId], references: [id])
+  motorId      String?
+  motor        RolluikMotor?        @relation(fields: [motorId], references: [id])
+  motorType    String
+  montageType  String
+  extras       String?
+  createdAt    DateTime             @default(now())
+  updatedAt    DateTime             @updatedAt
+}
+
+model InstallerSettings {
+  id                   String   @id @default(cuid())
+  installerId          String   @unique
+  installer            User     @relation(fields: [installerId], references: [id])
+  marginPercent        Float    @default(15)
+  hourlyRate           Float    @default(65)
+  smallMaterialCost    Float    @default(35)
+  defaultLaborHours    Float    @default(2)
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+}
+
+model InstallerRolluikPrice {
+  id                   String                @id @default(cuid())
+  installerId          String
+  installer            User                  @relation(fields: [installerId], references: [id])
+  lamelTypeId          String?
+  lamelType            RolluikLamelType?     @relation(fields: [lamelTypeId], references: [id])
+  colorId              String?
+  color                RolluikColorCategory? @relation(fields: [colorId], references: [id])
+  motorType            String?
+  montageType          String?
+  customPricePerM2     Float?
+  customSurchargeValue Float?
+  customMotorPrice     Float?
+  customMontagePrice   Float?
+  createdAt            DateTime              @default(now())
+  updatedAt            DateTime              @updatedAt
+}
+
+model InstallerPrice {
+  id                    String       @id @default(cuid())
+  installerId           String
+  installer             User         @relation(fields: [installerId], references: [id])
+
+  profileId             String?
+  profile               Profile?     @relation(fields: [profileId], references: [id])
+
+  colorId               String?
+  color                 ColorOption? @relation(fields: [colorId], references: [id])
+
+  glassId               String?
+  glass                 GlassOption? @relation(fields: [glassId], references: [id])
+
+  customPricePerM2      Float?
+  customSurchargeValue  Float?
+  customGlassPricePerM2 Float?
+
+  createdAt             DateTime     @default(now())
+  updatedAt             DateTime     @updatedAt
 }
 
 model Order {
   id          String      @id @default(cuid())
   installerId String
   installer   User        @relation(fields: [installerId], references: [id])
-  status      String      @default("RECEIVED")
+  // Allowed values: in_behandeling, geproduceerd, geleverd
+  status      String      @default("in_behandeling")
   totalPrice  Decimal     @default(0)
   createdAt   DateTime    @default(now())
   items       OrderItem[]
@@ -32,8 +213,13 @@ model Quote {
   id          String      @id @default(cuid())
   installerId String
   installer   User        @relation(fields: [installerId], references: [id])
+  configId    String?
   totalPrice  Decimal     @default(0)
   status      String      @default("DRAFT")
+  pdfBase64   String?
+  pdfFileName String?
+  pdfMimeType String?
+  pdfCreatedAt DateTime?
   createdAt   DateTime    @default(now())
   items       QuoteItem[]
 }

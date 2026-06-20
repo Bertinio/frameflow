@@ -1,0 +1,5 @@
+-- AlterTable
+ALTER TABLE "Quote" ADD COLUMN "pdfBase64" TEXT;
+ALTER TABLE "Quote" ADD COLUMN "pdfFileName" TEXT;
+ALTER TABLE "Quote" ADD COLUMN "pdfMimeType" TEXT;
+ALTER TABLE "Quote" ADD COLUMN "pdfCreatedAt" DATETIME;

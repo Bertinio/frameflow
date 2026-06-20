@@ -8,8 +8,8 @@ import { signOut } from "next-auth/react";
 const navItems = [
   { label: "Dashboard", href: "/installer/dashboard" },
   { label: "Offertes", href: "/installer/quotes" },
-  { label: "Orders", href: "/installer/orders" },
-  { label: "Calculator", href: "/installer/calculator" },
+  { label: "Bestellingen", href: "/installer/orders" },
+  { label: "Instellingen", href: "/installer/settings" },
 ];
 
 export default function InstallerSidebar() {
@@ -45,7 +45,7 @@ export default function InstallerSidebar() {
 
         <div className="mt-6 px-2">
           <button
-            onClick={() => signOut({ callbackUrl: "/login" })}
+            onClick={() => signOut({ callbackUrl: "/installateur/login" })}
             className="w-full rounded-lg border border-white/10 px-3 py-2 text-sm text-slate-300 hover:bg-white/5"
           >
             Uitloggen
@@ -99,7 +99,7 @@ export default function InstallerSidebar() {
               <button
                 onClick={() => {
                   setOpen(false);
-                  signOut({ callbackUrl: "/login" });
+                  signOut({ callbackUrl: "/installateur/login" });
                 }}
                 className="w-full rounded-lg border border-white/10 px-3 py-2 text-sm text-slate-300 hover:bg-white/5"
               >

@@ -67,7 +67,6 @@ export default function AdminPage() {
             >
               <option value="installer">Installer</option>
               <option value="importer">Importer</option>
-              <option value="manufacturer">Manufacturer</option>
               <option value="admin">Admin</option>
             </select>
           </div>

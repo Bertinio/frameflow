@@ -8,6 +8,7 @@ export async function proxy(request) {
   // Login, register, NextAuth en redirect altijd doorlaten
   if (
     pathname.startsWith("/login") ||
+    pathname.startsWith("/installateur/login") ||
     pathname.startsWith("/register") ||
     pathname.startsWith("/api/auth") ||
     pathname.startsWith("/redirect")
@@ -30,11 +31,15 @@ export async function proxy(request) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
 
-  if (pathname.startsWith("/manufacturer") && role !== "manufacturer") {
+  if (pathname.startsWith("/installateur") && role !== "installer") {
     return NextResponse.redirect(new URL("/login", request.url));
   }
 
   if (pathname.startsWith("/importer") && role !== "importer") {
+    return NextResponse.redirect(new URL("/login", request.url));
+  }
+
+  if (pathname.startsWith("/manufacturer") && role !== "manufacturer") {
     return NextResponse.redirect(new URL("/login", request.url));
   }
 
@@ -45,7 +50,8 @@ export const config = {
   matcher: [
     "/admin/:path*",
     "/installer/:path*",
-    "/manufacturer/:path*",
+    "/installateur/:path*",
     "/importer/:path*",
+    "/manufacturer/:path*",
   ],
 };

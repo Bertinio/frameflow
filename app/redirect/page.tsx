@@ -12,9 +12,9 @@ export default async function RedirectPage() {
   const role = session.user.role;
 
   if (role === "admin") return redirect("/admin/dashboard");
-  if (role === "installer") return redirect("/installer/dashboard");
-  if (role === "manufacturer") return redirect("/manufacturer/dashboard");
+  if (role === "installer") return redirect("/installateur/dashboard");
   if (role === "importer") return redirect("/importer/dashboard");
+  if (role === "manufacturer") return redirect("/manufacturer/dashboard");
 
   return redirect("/login");
 }

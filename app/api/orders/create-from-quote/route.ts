@@ -51,10 +51,10 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Quote not found" }, { status: 404 });
   }
 
-  const order = await prisma.order.create({
+    const order = await prisma.order.create({
     data: {
       installerId,
-      status: "RECEIVED",
+          status: "in_behandeling",
       totalPrice: quote.totalPrice,
       items: {
         create: quote.items.map((item) => ({

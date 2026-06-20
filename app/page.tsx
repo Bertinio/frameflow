@@ -3,63 +3,66 @@ export default function Home() {
     <div className="bg-black text-white min-h-screen">
 
       {/* HERO */}
-      <header className="pt-40 pb-32 max-w-5xl mx-auto px-6 text-center">
-        <img src="/frameflow-logo.png" alt="FrameFlow logo" className="mx-auto mb-8 w-56" />
-        <h1 className="text-6xl font-extrabold leading-tight mb-6 bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent drop-shadow-xl">
-          Configureer ramen.  
+      <header className="py-32 max-w-5xl mx-auto px-6 text-center">
+        <img
+          src="/frameflow-logo.png"
+          alt="FrameFlow logo"
+          className="mx-auto mb-10 w-120 opacity-90"
+        />
+
+        <h1 className="text-6xl font-extrabold leading-tight mb-6 bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">
+          Maak sneller offertes.
           <br />
-          Zie direct de prijs.
+          Verdien meer per dag.
         </h1>
 
         <p className="text-xl text-white/70 max-w-2xl mx-auto mb-12">
-          FrameFlow helpt ramenbedrijven sneller offertes maken met een realtime configurator.
+          FrameFlow geeft installateurs een realtime configurator waarmee je foutloos,
+          sneller en professioneler offertes maakt — met je eigen marges.
         </p>
 
         <div className="flex justify-center gap-4">
           <a
-            href="/configurator"
-            className="px-8 py-4 bg-white text-black rounded-xl font-semibold hover:bg-gray-200 transition shadow-lg hover:shadow-white/20"
+            href="/login"
+            className="px-8 py-4 bg-white text-black rounded-xl font-semibold hover:bg-gray-200 transition shadow-lg"
           >
-            Start configurator
+            Login
           </a>
 
           <a
-            href="/installers"
-            className="px-8 py-4 border border-white/30 rounded-xl font-semibold hover:bg-white/10 transition"
+            href="/register"
+            className="px-8 py-4 border border-white/20 rounded-xl font-semibold hover:bg-white/10 transition"
           >
-            Voor installateurs
+            Registreren
           </a>
         </div>
       </header>
 
-      {/* HOW IT WORKS */}
-      <section className="py-28 bg-white/5 border-t border-white/10 backdrop-blur">
+      {/* HOW IT WORKS – INSTALLATEUR FOCUS */}
+      <section className="py-32 bg-white/5 border-t border-white/10">
         <div className="max-w-6xl mx-auto px-6">
           <h2 className="text-4xl font-bold mb-16 text-center">Hoe FrameFlow werkt</h2>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-16 text-center">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-12 text-center">
 
             <div className="p-8 bg-white/10 rounded-2xl border border-white/10 hover:bg-white/20 transition">
-              <div className="text-5xl mb-4">🪟</div>
-              <h3 className="text-2xl font-semibold mb-2">1. Kies je raamtype</h3>
+              <h3 className="text-2xl font-semibold mb-2">1. Configureer ramen & deuren</h3>
               <p className="text-white/70">
-                Klanten selecteren het juiste raam in een intuïtieve wizard.
+                Kies het product, de afmetingen en opties. Alles wordt realtime gevalideerd zodat je geen fouten maakt.
               </p>
             </div>
 
             <div className="p-8 bg-white/10 rounded-2xl border border-white/10 hover:bg-white/20 transition">
-              <div className="text-5xl mb-4">📏</div>
-              <h3 className="text-2xl font-semibold mb-2">2. Voer afmetingen in</h3>
+              <h3 className="text-2xl font-semibold mb-2">2. Jouw marges automatisch toegepast</h3>
               <p className="text-white/70">
-                Breedte, hoogte en opties worden realtime gevalideerd.
+                Je eigen marge, uurloon en klein materiaal worden automatisch verrekend in elke offerte.
               </p>
             </div>
 
             <div className="p-8 bg-white/10 rounded-2xl border border-white/10 hover:bg-white/20 transition">
-              <div className="text-5xl mb-4">📨</div>
-              <h3 className="text-2xl font-semibold mb-2">3. Ontvang een offerte</h3>
+              <h3 className="text-2xl font-semibold mb-2">3. Offerte klaar in 30 seconden</h3>
               <p className="text-white/70">
-                Jij krijgt alle details direct in je mailbox.
+                Je krijgt een professionele PDF‑offerte die je meteen naar je klant kunt sturen.
               </p>
             </div>
 
@@ -67,16 +70,73 @@ export default function Home() {
         </div>
       </section>
 
+{/* STORYTELLING – COMPACT */}
+<section className="py-28 bg-black text-white border-t border-white/10">
+  <div className="max-w-4xl mx-auto px-6 text-center">
+
+    <h2 className="text-4xl font-bold mb-8">
+      Van avonden administratie naar offertes in minuten
+    </h2>
+
+    <p className="text-white/70 text-lg leading-relaxed mb-6">
+      Veel installateurs kennen het: overdag op de baan, ’s avonds nog offertes maken.
+      Maten opzoeken, prijzen vergelijken, opties dubbelchecken — en hopen dat je geen fout maakt.
+    </p>
+
+    <p className="text-white/70 text-lg leading-relaxed mb-6">
+      Met FrameFlow draait dat om. Je configureert, je marges worden automatisch toegepast,
+      en je offerte is klaar in 30 seconden.
+    </p>
+
+    <p className="text-white/70 text-lg leading-relaxed">
+      Minder avondwerk, minder stress en meer tijd voor andere professionele taken — of gewoon voor jezelf.
+      FrameFlow geeft installateurs niet alleen snelheid, maar ook rust en controle.
+    </p>
+
+  </div>
+</section>
+
+      {/* WHY INSTALLERS LOVE FRAMEFLOW */}
+<section className="py-32 max-w-6xl mx-auto px-6">
+  <h2 className="text-4xl font-bold mb-16 text-center">Waarom installateurs FrameFlow kiezen</h2>
+
+  <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+
+    <div className="p-8 bg-gray-900 rounded-2xl border border-white/10">
+      <h3 className="text-2xl font-semibold mb-3">Enorme tijdswinst</h3>
+      <p className="text-white/70">
+        Offertes maak je in minuten in plaats van uren. Meer tijd voor andere professionele taken — én meer tijd voor jezelf.
+      </p>
+    </div>
+
+    <div className="p-8 bg-gray-900 rounded-2xl border border-white/10">
+      <h3 className="text-2xl font-semibold mb-3">Minder fouten</h3>
+      <p className="text-white/70">
+        Automatische validatie voorkomt verkeerde maten, verkeerde opties en dure fouten. Minder herwerk, minder stress.
+      </p>
+    </div>
+
+    <div className="p-8 bg-gray-900 rounded-2xl border border-white/10">
+      <h3 className="text-2xl font-semibold mb-3">Meer winst per dag</h3>
+      <p className="text-white/70">
+        Door marges, uurloon en klein materiaal automatisch te verrekenen, verdien je meer per werkdag.
+      </p>
+    </div>
+
+  </div>
+</section>
+
+
       {/* CTA */}
-      <section className="py-28 text-center">
-        <h2 className="text-4xl font-bold mb-6">Klaar om slimmer offertes te maken?</h2>
-        <p className="text-white/70 mb-10">Start vandaag nog met FrameFlow.</p>
+      <section className="py-32 text-center">
+        <h2 className="text-4xl font-bold mb-6">Start vandaag nog met FrameFlow</h2>
+        <p className="text-white/70 mb-10">Maak offertes sneller, foutloos en met je eigen marges.</p>
 
         <a
-          href="/configurator"
-          className="px-10 py-4 bg-white text-black rounded-xl font-semibold hover:bg-gray-200 transition shadow-lg hover:shadow-white/20"
+          href="/register"
+          className="px-10 py-4 bg-white text-black rounded-xl font-semibold hover:bg-gray-200 transition shadow-lg"
         >
-          Start configurator
+          Registreren
         </a>
       </section>
 

@@ -18,7 +18,13 @@ async function main() {
     create: { email: 'installer@test.local', passwordHash: hash, role: 'installer' },
   });
 
-  console.log('Test users ensured: admin@test.local, installer@test.local (password: TestPass123!)');
+  await prisma.user.upsert({
+    where: { email: 'importer@test.local' },
+    update: { passwordHash: hash, role: 'importer' },
+    create: { email: 'importer@test.local', passwordHash: hash, role: 'importer' },
+  });
+
+  console.log('Test users ensured: admin@test.local, installer@test.local, importer@test.local (password: TestPass123!)');
   await prisma.$disconnect();
 }
 

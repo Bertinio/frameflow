@@ -1,10 +1,9 @@
 import Link from "next/link";
+import { saveConfigurationAsQuoteDraft } from "./actions";
 
 type Props = {
   searchParams: Record<string, string | string[] | undefined>;
 };
-
-import AddToQuoteButton from "../components/AddToQuoteButton";
 
 export default function CalculatorAddPage({ searchParams }: Props) {
   const width = String(searchParams.width ?? "");
@@ -30,30 +29,17 @@ export default function CalculatorAddPage({ searchParams }: Props) {
             Er ontbreken één of meerdere configuratieparameters. Ga terug naar de calculator om het raam opnieuw te configureren.
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-            <button
-              type="button"
-              onClick={() => redirect("/installer/calculator/type")}
-              className="rounded-2xl bg-sky-500 px-5 py-3 font-semibold text-black transition hover:bg-sky-400"
+            <Link
+              href="/installer/calculator/type"
+              className="rounded-2xl bg-sky-500 px-5 py-3 font-semibold text-black transition hover:bg-sky-400 text-center"
             >
               Nog een raam configureren
-            </button>
+            </Link>
           </div>
         </div>
       </div>
     );
   }
-
-  const allParams = {
-    quoteId,
-    type,
-    width: Number(width || 0),
-    height: Number(height || 0),
-    color,
-    glass,
-    options,
-    unitPrice: Number(unitPrice || 0),
-    totalPrice: Number(totalPrice || 0),
-  };
 
   return (
     <div className="min-h-screen bg-[#030712] text-white px-6 py-10">
@@ -90,7 +76,24 @@ export default function CalculatorAddPage({ searchParams }: Props) {
         </div>
 
         <div className="grid gap-4">
-          <AddToQuoteButton allParams={allParams} />
+          <form action={saveConfigurationAsQuoteDraft} className="grid gap-3">
+            <input type="hidden" name="quoteId" value={quoteId} />
+            <input type="hidden" name="type" value={type} />
+            <input type="hidden" name="width" value={width} />
+            <input type="hidden" name="height" value={height} />
+            <input type="hidden" name="color" value={color} />
+            <input type="hidden" name="glass" value={glass} />
+            <input type="hidden" name="options" value={JSON.stringify(options)} />
+            <input type="hidden" name="unitPrice" value={unitPrice} />
+            <input type="hidden" name="totalPrice" value={totalPrice} />
+
+            <button
+              type="submit"
+              className="rounded-3xl bg-sky-500 px-6 py-4 text-base font-semibold text-black transition hover:bg-sky-400"
+            >
+              Opslaan als offerteDraft
+            </button>
+          </form>
 
           <div className="grid gap-3 sm:grid-cols-2">
             <Link

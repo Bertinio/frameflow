@@ -5,7 +5,6 @@ export default async function DashboardPage() {
   const totalUsers = await prisma.user.count();
   const totalAdmins = await prisma.user.count({ where: { role: "admin" } });
   const totalInstallers = await prisma.user.count({ where: { role: "installer" } });
-  const totalManufacturers = await prisma.user.count({ where: { role: "manufacturer" } });
   const totalImporters = await prisma.user.count({ where: { role: "importer" } });
 
   return (
@@ -31,7 +30,6 @@ export default async function DashboardPage() {
           <Card title="Totaal gebruikers" value={totalUsers} />
           <Card title="Admins" value={totalAdmins} />
           <Card title="Installers" value={totalInstallers} />
-          <Card title="Manufacturers" value={totalManufacturers} />
           <Card title="Importers" value={totalImporters} />
         </div>
       </div>

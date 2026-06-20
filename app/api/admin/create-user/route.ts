@@ -3,12 +3,17 @@ import bcrypt from "bcrypt";
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
+const ALLOWED_ROLES = ["installer", "importer", "admin", "manufacturer"] as const;
 
 export async function POST(req: Request) {
   const { email, password, role } = await req.json();
 
   if (!email || !password || !role) {
     return NextResponse.json({ message: "Missing fields" }, { status: 400 });
+  }
+
+  if (!ALLOWED_ROLES.includes(role)) {
+    return NextResponse.json({ message: "Ongeldige rol" }, { status: 400 });
   }
 
   const existing = await prisma.user.findUnique({ where: { email } });
