@@ -4,13 +4,56 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { NextRequest, NextResponse } from "next/server";
 
-function parseJsonValue(value: string): unknown {
-  if (!value) {
+type AddQuoteItemRequestBody = {
+  quoteId?: string;
+  type?: string;
+  material?: string;
+  width?: number | string;
+  height?: number | string;
+  quantity?: number | string;
+  color?: string;
+  glass?: string;
+  options?: Prisma.InputJsonValue | string;
+  unitPrice?: number | string;
+  totalPrice?: number | string;
+};
+
+function toStringValue(value: unknown): string {
+  if (typeof value === "string") {
+    return value.trim();
+  }
+
+  if (typeof value === "number" && Number.isFinite(value)) {
+    return String(value);
+  }
+
+  return "";
+}
+
+function toNumberValue(value: unknown): number {
+  if (typeof value === "number") {
+    return Number.isFinite(value) ? value : NaN;
+  }
+
+  if (typeof value === "string") {
+    const parsed = Number(value);
+    return Number.isFinite(parsed) ? parsed : NaN;
+  }
+
+  return NaN;
+}
+
+function parseJsonValue(value: AddQuoteItemRequestBody["options"]): Prisma.InputJsonValue {
+  if (value === undefined || value === null || value === "") {
     return {};
   }
 
+  if (typeof value !== "string") {
+    return value;
+  }
+
   try {
-    return JSON.parse(value);
+    return JSON.parse(value) as Prisma.InputJsonValue;
   } catch {
     return value;
   }
@@ -30,27 +73,36 @@ export async function POST(
     );
   }
 
-  const body = (await req.json()) as Record<string, unknown>;
+  const body = (await req.json()) as AddQuoteItemRequestBody;
   const installerId = session.user.id as string;
-  const quoteId = String(body.quoteId ?? "").trim();
-  const type = String(body.type ?? "").trim();
-  const width = Number(body.width ?? "");
-  const height = Number(body.height ?? "");
-  const color = String(body.color ?? "").trim();
-  const glass = String(body.glass ?? "").trim();
-  const options = parseJsonValue(String(body.options ?? ""));
-  const unitPrice = String(body.unitPrice ?? "0").trim();
-  const totalPrice = String(body.totalPrice ?? "0").trim();
+  const quoteId = toStringValue(body.quoteId);
+  const type = toStringValue(body.type);
+  const material = toStringValue(body.material);
+  const width = toNumberValue(body.width);
+  const height = toNumberValue(body.height);
+  const quantity = toNumberValue(body.quantity || 1);
+  const color = toStringValue(body.color);
+  const glass = toStringValue(body.glass);
+  const options = parseJsonValue(body.options);
+  const unitPrice = toNumberValue(body.unitPrice);
+  const totalPrice = toNumberValue(body.totalPrice);
 
-  if (!type || !width || !height || !unitPrice || !totalPrice) {
+  if (
+    !type ||
+    !Number.isFinite(width) || width <= 0 ||
+    !Number.isFinite(height) || height <= 0 ||
+    !Number.isFinite(unitPrice) || unitPrice <= 0 ||
+    !Number.isFinite(totalPrice) || totalPrice <= 0 ||
+    !Number.isFinite(quantity) || quantity <= 0
+  ) {
     return NextResponse.json(
       { error: "Missing or invalid quote item data." },
       { status: 400 }
     );
   }
 
-  const unitPriceDecimal = new Prisma.Decimal(unitPrice);
-  const totalPriceDecimal = new Prisma.Decimal(totalPrice);
+  const unitPriceDecimal = new Prisma.Decimal(unitPrice.toString());
+  const totalPriceDecimal = new Prisma.Decimal(totalPrice.toString());
 
   let quote = null;
 
@@ -92,6 +144,7 @@ export async function POST(
       type,
       width,
       height,
+      ...(material ? { material } : {}),
       color,
       glass,
       options,
