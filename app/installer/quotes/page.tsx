@@ -4,14 +4,6 @@ import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 
-type Quote = {
-  id: string;
-  createdAt: Date;
-  customerName: string;
-  totalPrice: number;
-  status: string;
-};
-
 export default async function InstallerQuotesPage() {
   const session = await getServerSession(authOptions);
 
@@ -83,7 +75,7 @@ export default async function InstallerQuotesPage() {
                           year: "numeric",
                         }).format(quote.createdAt)}
                       </td>
-                      <td className="px-6 py-5 text-sm text-slate-300">{quote.customerName}</td>
+                      <td className="px-6 py-5 text-sm text-slate-300">-</td>
                       <td className="px-6 py-5 text-sm text-slate-300">€{quote.totalPrice.toFixed(2)}</td>
                       <td className="px-6 py-5 text-sm text-slate-300">{quote.status}</td>
                       <td className="px-6 py-5 text-sm">

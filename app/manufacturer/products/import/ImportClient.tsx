@@ -1,7 +1,11 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { downloadTemplate, importManufacturerProducts } from "@/app/manufacturer/products/import/actions";
+import {
+  downloadTemplate,
+  importManufacturerProducts,
+  initialImportState,
+} from "@/app/manufacturer/products/import/actions";
 import { parseManufacturerImportFile, type ManufacturerImportResult } from "./_lib";
 
 type PreviewState = ManufacturerImportResult & {
@@ -55,12 +59,18 @@ export default function ImportClient() {
 
     setIsImporting(true);
     try {
-      const result = await importManufacturerProducts(formData);
+      const result = await importManufacturerProducts(initialImportState, formData);
       if (result.errors.length > 0) {
-        setPreview((current) => ({ ...current, errors: result.errors, rows: result.rows }));
+        setPreview((current) => ({
+          ...current,
+          errors: result.errors.map((error) => ({
+            rowNumber: error.row,
+            errors: [error.message],
+          })),
+        }));
         setServerMessage("Import geannuleerd vanwege fouten.");
       } else {
-        setServerMessage(`Succesvol ${result.imported} producten geïmporteerd.`);
+        setServerMessage(`Succesvol ${result.importedCount} producten geïmporteerd.`);
         setPreview({ rows: [], errors: [] });
         if (inputRef.current) {
           inputRef.current.value = "";
@@ -75,11 +85,11 @@ export default function ImportClient() {
 
   async function handleTemplateDownload() {
     const template = await downloadTemplate();
-    const blob = new Blob([Buffer.from(template.contentBase64, "base64")], { type: template.mimeType });
+    const blob = new Blob([template], { type: "text/csv;charset=utf-8;" });
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
-    link.download = template.filename;
+    link.download = "manufacturer-products-template.csv";
     document.body.appendChild(link);
     link.click();
     link.remove();

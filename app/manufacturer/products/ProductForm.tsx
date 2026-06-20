@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import {
   PRODUCT_TYPES,
   type ManufacturerProductType,
-} from "@/app/manufacturer/products/actions";
+} from "@/app/manufacturer/products/types";
 
 type ProductFormValues = {
   type: ManufacturerProductType;

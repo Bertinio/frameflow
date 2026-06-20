@@ -5,12 +5,13 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { requireManufacturerContext } from "@/app/manufacturer/_lib";
-
-export const PRODUCT_TYPES = ["lamel", "motor", "color", "kast", "option"] as const;
-export type ManufacturerProductType = (typeof PRODUCT_TYPES)[number];
+import {
+  isManufacturerProductType,
+  type ManufacturerProductType,
+} from "@/app/manufacturer/products/types";
 
 function isProductType(value: string): value is ManufacturerProductType {
-  return PRODUCT_TYPES.includes(value as ManufacturerProductType);
+  return isManufacturerProductType(value);
 }
 
 function parsePositiveDecimal(value: FormDataEntryValue | null) {

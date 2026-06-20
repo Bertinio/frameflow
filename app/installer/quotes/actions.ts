@@ -109,14 +109,6 @@ export async function exportQuoteToPdfAndSave(quoteId: string) {
 
   revalidatePath(`/installer/quotes/${quote.id}`);
   revalidatePath(`/installateur/offertes/${quote.id}`);
-
-  return {
-    quoteId: quote.id,
-    fileName: pdfFileName,
-    mimeType: "application/pdf",
-    sizeBytes: Buffer.byteLength(pdfBase64, "base64"),
-    saved: true,
-  };
 }
 
 export async function convertQuoteToOrderAction(quoteId: string) {
