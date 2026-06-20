@@ -7,13 +7,12 @@ import { NextRequest, NextResponse } from "next/server";
 type AddQuoteItemRequestBody = {
   quoteId?: string;
   type?: string;
-  material?: string;
   width?: number | string;
   height?: number | string;
   quantity?: number | string;
   color?: string;
   glass?: string;
-  options?: Prisma.InputJsonValue | string;
+  options?: unknown;
   unitPrice?: number | string;
   totalPrice?: number | string;
 };
@@ -43,19 +42,20 @@ function toNumberValue(value: unknown): number {
   return NaN;
 }
 
-function parseJsonValue(value: AddQuoteItemRequestBody["options"]): Prisma.InputJsonValue {
-  if (value === undefined || value === null || value === "") {
-    return {};
+function toOptionsString(value: AddQuoteItemRequestBody["options"]): string {
+  if (value === undefined || value === null) {
+    return "{}";
   }
 
-  if (typeof value !== "string") {
-    return value;
+  if (typeof value === "string") {
+    const trimmed = value.trim();
+    return trimmed || "{}";
   }
 
   try {
-    return JSON.parse(value) as Prisma.InputJsonValue;
+    return JSON.stringify(value);
   } catch {
-    return value;
+    return "{}";
   }
 }
 
@@ -77,13 +77,12 @@ export async function POST(
   const installerId = session.user.id as string;
   const quoteId = toStringValue(body.quoteId);
   const type = toStringValue(body.type);
-  const material = toStringValue(body.material);
   const width = toNumberValue(body.width);
   const height = toNumberValue(body.height);
   const quantity = toNumberValue(body.quantity || 1);
   const color = toStringValue(body.color);
   const glass = toStringValue(body.glass);
-  const options = parseJsonValue(body.options);
+  const options = toOptionsString(body.options);
   const unitPrice = toNumberValue(body.unitPrice);
   const totalPrice = toNumberValue(body.totalPrice);
 
@@ -144,7 +143,6 @@ export async function POST(
       type,
       width,
       height,
-      ...(material ? { material } : {}),
       color,
       glass,
       options,
