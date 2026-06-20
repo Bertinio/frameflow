@@ -3,10 +3,10 @@ import { prisma } from "@/lib/prisma";
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   void req;
-  const { id } = params;
+  const { id } = await params;
   const pdfBuffer = await generatePdfForQuote(id);
 
   return new NextResponse(pdfBuffer, {

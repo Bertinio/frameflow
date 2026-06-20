@@ -4,7 +4,11 @@ import { prisma } from "@/lib/prisma";
 
 const ALLOWED_ROLES = ["installer", "importer", "admin", "manufacturer"] as const;
 
-export async function POST(req: NextRequest) {
+export async function POST(
+  req: NextRequest,
+  context: { params: Promise<Record<string, never>> }
+) {
+  await context.params;
   const { email, password, role } = await req.json();
 
   if (!email || !password || !role) {

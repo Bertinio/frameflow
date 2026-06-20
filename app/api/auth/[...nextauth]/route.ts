@@ -164,16 +164,18 @@ export const handler = NextAuth(authOptions);
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { nextauth: string[] } }
+  { params }: { params: Promise<{ nextauth: string[] }> }
 ) {
-  const response = await handler(req, { params });
+  const { nextauth } = await params;
+  const response = await handler(req, { params: { nextauth } });
   return response ?? NextResponse.json({ error: "Auth handler failed" }, { status: 500 });
 }
 
 export async function POST(
   req: NextRequest,
-  { params }: { params: { nextauth: string[] } }
+  { params }: { params: Promise<{ nextauth: string[] }> }
 ) {
-  const response = await handler(req, { params });
+  const { nextauth } = await params;
+  const response = await handler(req, { params: { nextauth } });
   return response ?? NextResponse.json({ error: "Auth handler failed" }, { status: 500 });
 }
